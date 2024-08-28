@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import Link from "next/link";
 import styled from "styled-components";
 
 export const Container = styled.section`
@@ -5,20 +7,48 @@ export const Container = styled.section`
   justify-content: space-between;
   flex-direction: column;
   height: 100vh;
-  background-color: #fde74c;
+  background-color: ${({ theme }) => theme.colors.yellow900};
 `;
 export const Logo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
-  padding: 2.5rem;
+  padding: 5rem 0;
+
+  h1 {
+    font-size: ${({ theme }) => theme.sizes.font.title};
+  }
 `;
-export const Form = styled.form`
+
+export const Title = styled(motion.h1)`
   display: flex;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem 0;
+  font-size: ${({ theme }) => theme.sizes.font.title};
+  text-transform: uppercase;
+  font-weight: 600;
+`;
+
+export const Form = styled(motion.form)`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   height: 100%;
   background-color: #fff;
-  padding: 0 2.5rem;
+  padding: 2.5rem 1rem;
+
+  border-top-left-radius: 15%;
+`;
+
+export const LinkStyled = styled(motion(Link))`
+  margin-top: 4rem;
+
+  font-size: ${({ theme }) => theme.sizes.font.md};
+  font-weight: 500;
+
+  span {
+    color: ${({ theme }) => theme.colors.yellow900};
+  }
 `;
