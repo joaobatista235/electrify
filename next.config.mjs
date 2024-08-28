@@ -9,9 +9,12 @@ const withPWA = withPWAInit({
   workboxOptions: {
     disableDevLogs: true,
   },
-
 });
 
-const nextConfig = {};
+const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
+};
 
 export default withPWA(nextConfig);
