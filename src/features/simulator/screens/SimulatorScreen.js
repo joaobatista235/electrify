@@ -1,4 +1,3 @@
-// src/features/simulator/screens/SimulatorScreen.js
 import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet } from 'react-native';
 import EquipmentForm from '../components/EquipmentForm';

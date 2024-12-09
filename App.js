@@ -1,52 +1,25 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import DashboardScreen from './src/features/dashboard/screens/DashboardScreen';
-import SimulatorScreen from './src/features/simulator/screens/SimulatorScreen'; // Importando a tela do simulador
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from './src/features/auth/screens/LoginScreen';
+import RegisterScreen from './src/features/auth/screens/RegisterScreen';
+import MainTabs from './src/features/main/MainTabs';
 
-const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Dashboard"
+      <Stack.Navigator
+        initialRouteName="Login"
         screenOptions={{
-          tabBarActiveTintColor: '#4CAF50',
-          tabBarInactiveTintColor: '#808080',
-          tabBarStyle: {
-            backgroundColor: '#ffffff',
-            borderTopWidth: 0,
-            height: 60,
-          },
+          headerShown: false,
         }}
       >
-        {/* Tela Dashboard */}
-        <Tab.Screen
-          name="Dashboard"
-          component={DashboardScreen}
-          options={{
-            tabBarLabel: 'Dashboard',
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome name="coffee" size={size} color={color} />
-            ),
-          }}
-        />
-        
-        {/* Tela Simulador de Consumo */}
-        <Tab.Screen
-          name="Simulador"
-          component={SimulatorScreen}
-          options={{
-            tabBarLabel: 'Simulador',
-            tabBarIcon: ({ color, size }) => (
-              <FontAwesome name="calculator" size={size} color={color} /> // Ícone do simulador
-            ),
-          }}
-        />
-        
-      </Tab.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="Main" component={MainTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
