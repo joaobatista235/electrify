@@ -1,0 +1,120 @@
+{
+    "user": {
+      "name": "João Silva",
+      "email": "joao.silva@example.com",
+      "level": 5,
+      "xp": 750,
+      "xpToNextLevel": 1000,
+      "coins": 120,
+      "badges": [
+        {
+          "id": 1,
+          "name": "Iniciante",
+          "icon": "trophy",
+          "description": "Realizou a primeira simulação."
+        },
+        {
+          "id": 2,
+          "name": "Economizador",
+          "icon": "leaf",
+          "description": "Reduziu o consumo em 10%."
+        },
+        {
+          "id": 3,
+          "name": "Leitor de Dicas",
+          "icon": "book",
+          "description": "Leu 5 dicas de economia."
+        }
+      ]
+    },
+    "consumption": {
+      "current": {
+        "kWh": 150,
+        "cost": 120.50,
+        "date": "2023-10-25"
+      },
+      "daily": [
+        {
+          "date": "2023-10-25",
+          "kWh": 5.2,
+          "cost": 4.10
+        },
+        {
+          "date": "2023-10-24",
+          "kWh": 5.5,
+          "cost": 4.30
+        },
+        {
+          "date": "2023-10-23",
+          "kWh": 6.0,
+          "cost": 4.70
+        }
+      ],
+      "weekly": [
+        {
+          "week": "2023-10-23 to 2023-10-29",
+          "kWh": 40.0,
+          "cost": 32.00
+        },
+        {
+          "week": "2023-10-16 to 2023-10-22",
+          "kWh": 42.5,
+          "cost": 34.00
+        }
+      ],
+      "monthly": [
+        {
+          "month": "2023-10",
+          "kWh": 180.0,
+          "cost": 144.00
+        },
+        {
+          "month": "2023-09",
+          "kWh": 190.0,
+          "cost": 152.00
+        }
+      ]
+    },
+    "tips": [
+      {
+        "id": 1,
+        "title": "Use lâmpadas LED",
+        "description": "Substitua lâmpadas incandescentes por LED para economizar até 80% de energia.",
+        "category": "Iluminação"
+      },
+      {
+        "id": 2,
+        "title": "Ajuste o termostato",
+        "description": "Mantenha o ar-condicionado a 24°C para reduzir o consumo.",
+        "category": "Climatização"
+      },
+      {
+        "id": 3,
+        "title": "Desligue dispositivos em standby",
+        "description": "Aparelhos em standby consomem energia. Use réguas com botão de liga/desliga.",
+        "category": "Eletrônicos"
+      }
+    ],
+    "goals": [
+      {
+        "id": 1,
+        "title": "Reduzir consumo em 10%",
+        "description": "Economize 10% de energia este mês e ganhe 50 moedas.",
+        "target": 162.0,
+        "current": 150.0,
+        "reward": 50
+      },
+      {
+        "id": 2,
+        "title": "Ler 5 dicas de economia",
+        "description": "Leia 5 dicas e ganhe 20 moedas.",
+        "target": 5,
+        "current": 3,
+        "reward": 20
+      }
+    ],
+    "impact": {
+      "co2Saved": 50.5,
+      "treesPlanted": 3
+    }
+  }

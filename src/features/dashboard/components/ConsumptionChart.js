@@ -28,16 +28,16 @@ const ConsumptionChart = ({ data }) => {
             },
           ],
         }}
-        width={screenWidth - 40} // Ajuste da largura
+        width={screenWidth - 40} 
         height={220}
         yAxisSuffix=" kWh"
         chartConfig={{
-          backgroundColor: '#FFFFFF', // Fundo branco
-          backgroundGradientFrom: '#FFC107', // Amarelo (início do gradiente)
-          backgroundGradientTo: '#FFA000', // Amarelo mais escuro (fim do gradiente)
+          backgroundColor: '#FFFFFF',
+          backgroundGradientFrom: '#FFC107',
+          backgroundGradientTo: '#FFA000',
           decimalPlaces: 0,
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Texto branco
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Texto dos eixos em preto
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           style: {
             borderRadius: 8,
           },
@@ -45,13 +45,13 @@ const ConsumptionChart = ({ data }) => {
             fontSize: 12,
           },
           propsForDots: {
-            r: '5', // Tamanho dos pontos
+            r: '5',
             strokeWidth: '2',
-            stroke: '#FFA000', // Borda dos pontos em amarelo mais escuro
-            fill: '#FFFFFF', // Preenchimento dos pontos em branco
+            stroke: '#FFA000',
+            fill: '#FFFFFF',
           },
           propsForBackgroundLines: {
-            stroke: '#E0E0E0', // Linhas de fundo do gráfico em cinza claro
+            stroke: '#E0E0E0',
             strokeWidth: 1,
           },
         }}
@@ -66,23 +66,23 @@ const ConsumptionChart = ({ data }) => {
 
 const styles = StyleSheet.create({
   chartContainer: {
-    backgroundColor: '#FFFFFF', // Fundo branco
-    borderRadius: 16, // Bordas mais arredondadas
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000', // Sombra
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 5, // Sombra no Android
+    elevation: 5,
     marginBottom: 16,
-    padding: 16, // Mais espaçamento interno
+    padding: 16,
   },
   chartTitle: {
-    fontSize: 20, // Tamanho maior
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333333', // Cinza escuro
-    marginBottom: 16, // Mais espaçamento
+    color: '#333333',
+    marginBottom: 16,
   },
   placeholderText: {
     color: '#888',

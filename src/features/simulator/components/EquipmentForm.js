@@ -40,7 +40,7 @@ const EquipmentForm = ({ onSubmit }) => {
             selectedValue={equipmentType}
             style={styles.picker}
             onValueChange={(itemValue) => setEquipmentType(itemValue)}
-            dropdownIconColor={theme.colors.primary} // Cor do ícone do Picker
+            dropdownIconColor={theme.colors.primary}
           >
             <Picker.Item label="Ar-condicionado" value="AC" />
             <Picker.Item label="Lâmpada" value="Lamp" />
@@ -82,8 +82,8 @@ const EquipmentForm = ({ onSubmit }) => {
           onPress={handleSubmit}
           style={styles.button}
           icon="calculator"
-          buttonColor={theme.colors.primary} // Amarelo (cor primária)
-          textColor="#FFFFFF" // Texto branco
+          buttonColor={theme.colors.primary}
+          textColor="#FFFFFF"
         >
           Calcular Consumo
         </Button>
@@ -95,18 +95,18 @@ const EquipmentForm = ({ onSubmit }) => {
 const styles = StyleSheet.create({
   card: {
     margin: 16,
-    borderRadius: 16,
+    borderRadius: 8,
     elevation: 4,
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333333', // Cinza escuro
+    color: '#333333',
     marginBottom: 8,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#E0E0E0', // Cinza claro
+    borderColor: '#E0E0E0',
     borderRadius: 8,
     marginBottom: 16,
   },
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
-    backgroundColor: '#FFFFFF', // Fundo branco
+    backgroundColor: '#FFFFFF',
   },
   button: {
     marginTop: 16,
   },
   errorText: {
-    color: '#FF5252', // Vermelho
+    color: '#FF5252',
     fontSize: 14,
     marginBottom: 8,
   },

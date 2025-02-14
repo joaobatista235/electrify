@@ -4,19 +4,16 @@ import { TextInput, Button, Text, Card, List } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
-// Dados dos equipamentos (consumo médio em kWh)
 const EQUIPMENT_DATA = {
-  AC: { label: 'Ar-condicionado', consumption: 1.5 }, // 1.5 kWh por hora
-  Shower: { label: 'Chuveiro', consumption: 5.0 }, // 5.0 kWh por hora
-  Lamp: { label: 'Lâmpada', consumption: 0.1 }, // 0.1 kWh por hora
-  Computer: { label: 'Computador', consumption: 0.3 }, // 0.3 kWh por hora
+  AC: { label: 'Ar-condicionado', consumption: 1.5 },
+  Shower: { label: 'Chuveiro', consumption: 5.0 },
+  Lamp: { label: 'Lâmpada', consumption: 0.1 },
+  Computer: { label: 'Computador', consumption: 0.3 },
 };
 
-// Valor médio do kWh em reais (exemplo)
 const KWH_PRICE = 0.75;
 
 const SimulatorScreen = () => {
-  // Carregar as fontes personalizadas
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
@@ -30,12 +27,10 @@ const SimulatorScreen = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [errors, setErrors] = useState({});
 
-  // Se as fontes não estiverem carregadas, exibe um loading ou null
   if (!fontsLoaded) {
-    return null; // Ou uma tela de carregamento
+    return null;
   }
 
-  // Adiciona um equipamento à lista
   const handleAddEquipment = () => {
     const newErrors = {};
 
@@ -62,7 +57,6 @@ const SimulatorScreen = () => {
     setUsageHours('');
   };
 
-  // Calcula o consumo total
   const handleCalculate = () => {
     let consumption = 0;
     equipments.forEach((equipment) => {
@@ -73,7 +67,6 @@ const SimulatorScreen = () => {
     setTotalCost(consumption * KWH_PRICE);
   };
 
-  // Limpa a lista e os resultados
   const handleClear = () => {
     setEquipments([]);
     setTotalConsumption(0);
@@ -92,7 +85,7 @@ const SimulatorScreen = () => {
               selectedValue={equipmentType}
               style={styles.picker}
               onValueChange={(itemValue) => setEquipmentType(itemValue)}
-              dropdownIconColor="#FFC107" // Amarelo
+              dropdownIconColor="#FFC107"
             >
               {Object.keys(EQUIPMENT_DATA).map((key) => (
                 <Picker.Item key={key} label={EQUIPMENT_DATA[key].label} value={key} />
@@ -126,9 +119,9 @@ const SimulatorScreen = () => {
             onChangeText={setUsageHours}
             placeholder="Horas de uso diário"
             error={!!errors.usageHours}
-            left={<TextInput.Icon icon="clock" color="#FFC107" />} // Amarelo
-            outlineColor="#E0E0E0" // Cinza claro
-            activeOutlineColor="#FFC107" // Amarelo
+            left={<TextInput.Icon icon="clock" color="#FFC107" />}
+            outlineColor="#E0E0E0"
+            activeOutlineColor="#FFC107"
           />
           {errors.usageHours && <Text style={styles.errorText}>{errors.usageHours}</Text>}
 
@@ -138,8 +131,8 @@ const SimulatorScreen = () => {
             onPress={handleAddEquipment}
             style={styles.button}
             icon="plus"
-            buttonColor="#FFC107" // Amarelo
-            textColor="#FFFFFF" // Texto branco
+            buttonColor="#FFC107"
+            textColor="#FFFFFF"
           >
             Adicionar Equipamento
           </Button>
@@ -156,7 +149,7 @@ const SimulatorScreen = () => {
                 key={index}
                 title={`${equipment.label} (${equipment.quantity}x)`}
                 description={`${equipment.usageHours} horas/dia`}
-                left={() => <List.Icon icon="lightbulb" color="#FFC107" />} // Amarelo
+                left={() => <List.Icon icon="lightbulb" color="#FFC107" />}
               />
             ))}
           </Card.Content>
@@ -185,8 +178,8 @@ const SimulatorScreen = () => {
           onPress={handleCalculate}
           style={styles.button}
           icon="calculator"
-          buttonColor="#FFC107" // Amarelo
-          textColor="#FFFFFF" // Texto branco
+          buttonColor="#FFC107"
+          textColor="#FFFFFF"
           disabled={equipments.length === 0}
         >
           Calcular Consumo
@@ -196,7 +189,7 @@ const SimulatorScreen = () => {
           onPress={handleClear}
           style={styles.button}
           icon="delete"
-          textColor="#FFC107" // Amarelo
+          textColor="#FFC107"
           disabled={equipments.length === 0}
         >
           Limpar Tudo
@@ -210,29 +203,29 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 16,
-    backgroundColor: '#F5F5F5', // Fundo cinza claro
+    backgroundColor: '#F5F5F5',
   },
   card: {
     marginBottom: 16,
-    borderRadius: 16,
+    borderRadius: 8,
     elevation: 4,
-    backgroundColor: '#FFFFFF', // Fundo branco
+    backgroundColor: '#FFFFFF',
   },
   title: {
     fontSize: 20,
-    fontFamily: 'Poppins_700Bold', // Fonte personalizada
-    color: '#333333', // Cinza escuro
+    fontFamily: 'Poppins_700Bold',
+    color: '#333333',
     marginBottom: 16,
   },
   label: {
     fontSize: 16,
-    fontFamily: 'Poppins_700Bold', // Fonte personalizada
-    color: '#333333', // Cinza escuro
+    fontFamily: 'Poppins_700Bold',
+    color: '#333333',
     marginBottom: 8,
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#E0E0E0', // Cinza claro
+    borderColor: '#E0E0E0',
     borderRadius: 8,
     marginBottom: 16,
   },
@@ -242,21 +235,21 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
-    backgroundColor: '#FFFFFF', // Fundo branco
+    backgroundColor: '#FFFFFF',
   },
   button: {
     marginTop: 8,
   },
   errorText: {
     fontSize: 14,
-    fontFamily: 'Poppins_400Regular', // Fonte personalizada
-    color: '#FF5252', // Vermelho
+    fontFamily: 'Poppins_400Regular',
+    color: '#FF5252',
     marginBottom: 8,
   },
   resultText: {
     fontSize: 16,
-    fontFamily: 'Poppins_700Bold', // Fonte personalizada
-    color: '#333333', // Cinza escuro
+    fontFamily: 'Poppins_700Bold',
+    color: '#333333',
     marginBottom: 8,
   },
   actionsContainer: {

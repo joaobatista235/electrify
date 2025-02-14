@@ -15,7 +15,7 @@ export default function DashboardScreen() {
       datasets: [
         {
           data: [1, 2, 3, 2, 5],
-          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`, // Amarelo
+          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
           strokeWidth: 2,
         },
       ],
@@ -25,7 +25,7 @@ export default function DashboardScreen() {
       datasets: [
         {
           data: [15, 20, 18, 25, 30, 40, 50],
-          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`, // Amarelo
+          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
           strokeWidth: 2,
         },
       ],
@@ -35,7 +35,7 @@ export default function DashboardScreen() {
       datasets: [
         {
           data: [100, 120, 130, 140, 160, 170, 180],
-          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`, // Amarelo
+          color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
           strokeWidth: 2,
         },
       ],
@@ -94,28 +94,28 @@ export default function DashboardScreen() {
           width={screenWidth - 40}
           height={220}
           chartConfig={{
-            backgroundColor: '#FFFFFF', // Fundo branco
-            backgroundGradientFrom: '#FFFFFF', // Fundo branco
-            backgroundGradientTo: '#FFFFFF', // Fundo branco
+            backgroundColor: '#FFFFFF',
+            backgroundGradientFrom: '#FFFFFF',
+            backgroundGradientTo: '#FFFFFF',
             decimalPlaces: 2,
-            color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`, // Linha do gráfico em amarelo
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Texto dos eixos em preto
+            color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
-              borderRadius: 16,
+              borderRadius: 8,
             },
             propsForDots: {
-              r: '5', // Tamanho dos pontos
+              r: '5',
               strokeWidth: '2',
-              stroke: '#FFA000', // Borda dos pontos em amarelo mais escuro
-              fill: '#FFFFFF', // Preenchimento dos pontos em branco
+              stroke: '#FFA000',
+              fill: '#FFFFFF',
             },
             propsForBackgroundLines: {
-              stroke: '#E0E0E0', // Linhas de fundo do gráfico em cinza claro
+              stroke: '#E0E0E0',
               strokeWidth: 1,
             },
           }}
           bezier
-          style={{ marginVertical: 8, borderRadius: 16, backgroundColor: '#FFFFFF' }} // Fundo branco
+          style={{ marginVertical: 8, borderRadius: 8, backgroundColor: '#FFFFFF' }}
         />
       </View>
     </View>
@@ -125,24 +125,24 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5', // Fundo cinza claro
+    backgroundColor: '#F5F5F5',
     padding: 16,
   },
   chartCard: {
-    backgroundColor: '#FFFFFF', // Fundo branco
-    borderRadius: 16, // Bordas mais arredondadas
-    shadowColor: '#000', // Sombra
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 5, // Sombra no Android
+    elevation: 5,
     padding: 16,
   },
   tabsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0', // Linha separadora
+    borderBottomColor: '#E0E0E0',
     marginBottom: 16,
   },
   tabButton: {
@@ -150,14 +150,14 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: '#FFC107', // Amarelo (cor primária)
+    borderBottomColor: '#FFC107',
   },
   tabText: {
     fontSize: 16,
-    color: '#666666', // Cinza médio
+    color: '#666666',
   },
   activeTabText: {
-    color: '#FFC107', // Amarelo (cor primária)
+    color: '#FFC107',
     fontWeight: 'bold',
   },
 });

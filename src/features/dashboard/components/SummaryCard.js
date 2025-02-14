@@ -28,19 +28,19 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: '100%',
     padding: 16,
-    backgroundColor: '#FFFFFF', // Fundo branco
-    borderRadius: 16, // Bordas mais arredondadas
-    shadowColor: '#000', // Sombra
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 5, // Sombra no Android
+    elevation: 5,
     marginBottom: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333', // Cinza escuro
+    color: '#333333',
     marginBottom: 8,
   },
   valueContainer: {
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFC107', // Amarelo (cor primária)
+    color: '#FFC107',
   },
   subtitle: {
     fontSize: 14,
-    color: '#666666', // Cinza médio
+    color: '#666666',
   },
 });
 

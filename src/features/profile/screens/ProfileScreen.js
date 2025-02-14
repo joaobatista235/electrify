@@ -1,33 +1,62 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
-import { Text, Card, ProgressBar, Button } from 'react-native-paper';
+import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { Text, Card, ProgressBar, Button, ActivityIndicator } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import { signOut } from 'firebase/auth';
+import { auth, db } from '../../../firebase/firebaseConfig';
+import { useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 
-const ProfileScreen = () => {
-    // Carregar as fontes personalizadas
+const ProfileScreen = ({ navigation }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const [fontsLoaded] = useFonts({
         Poppins_400Regular,
         Poppins_700Bold,
     });
 
-    // Se as fontes não estiverem carregadas, exibe um loading ou null
-    if (!fontsLoaded) {
-        return null; // Ou uma tela de carregamento
+    const fetchUserData = async () => {
+        try {
+            const user = auth.currentUser;
+            if (user) {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    setUser(userDoc.data());
+                } else {
+                    console.log("Documento do usuário não encontrado.");
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao buscar dados do usuário:", error);
+            Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    if (!fontsLoaded || loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#FFC107" />
+                <Text style={styles.loadingText}>Carregando...</Text>
+            </View>
+        );
     }
 
-    // Dados do usuário (exemplo)
-    const user = {
-        name: 'João Silva',
-        level: 5,
-        xp: 750,
-        xpToNextLevel: 1000,
-        coins: 120,
-        badges: [
-            { id: 1, name: 'Iniciante', icon: 'trophy', description: 'Realizou a primeira simulação.' },
-            { id: 2, name: 'Economizador', icon: 'leaf', description: 'Reduziu o consumo em 10%.' },
-            { id: 3, name: 'Leitor de Dicas', icon: 'book', description: 'Leu 5 dicas de economia.' },
-        ],
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            Alert.alert('Sucesso', 'Logout realizado com sucesso!');
+            navigation.navigate('Login');
+        } catch (error) {
+            Alert.alert('Erro', error.message);
+        }
     };
 
     return (
@@ -38,6 +67,17 @@ const ProfileScreen = () => {
                     <View style={styles.profileInfo}>
                         <FontAwesome name="user-circle" size={60} color="#FFC107" />
                         <Text style={styles.userName}>{user.name}</Text>
+                        {/* Botão de Editar Perfil */}
+                        <Button
+                            mode="contained"
+                            onPress={() => console.log('Editar perfil')}
+                            style={styles.editButton}
+                            buttonColor="#FFC107"
+                            textColor="#FFFFFF"
+                            icon="pencil"
+                        >
+                            Editar Perfil
+                        </Button>
                     </View>
                 </Card.Content>
             </Card>
@@ -49,7 +89,7 @@ const ProfileScreen = () => {
                     <Text style={styles.levelText}>Nível {user.level} - Economizador de Energia</Text>
                     <ProgressBar
                         progress={user.xp / user.xpToNextLevel}
-                        color="#FFC107" // Amarelo
+                        color="#FFC107"
                         style={styles.progressBar}
                     />
                     <Text style={styles.xpText}>
@@ -75,7 +115,7 @@ const ProfileScreen = () => {
                         mode="outlined"
                         onPress={() => console.log('Ver todas as medalhas')}
                         style={styles.button}
-                        textColor="#FFC107" // Amarelo
+                        textColor="#FFC107"
                         icon="trophy"
                     >
                         Ver Todas as Medalhas
@@ -83,27 +123,16 @@ const ProfileScreen = () => {
                 </Card.Content>
             </Card>
 
-            {/* Card de Moedas */}
-            <Card style={styles.card}>
-                <Card.Content>
-                    <Text style={styles.title}>Moedas</Text>
-                    <View style={styles.coinContainer}>
-                        <FontAwesome name="money" size={24} color="#FFC107" />
-                        <Text style={styles.coinText}>{user.coins} moedas</Text>
-                    </View>
-                </Card.Content>
-            </Card>
-
-            {/* Botão de Editar Perfil */}
+            {/* Botão de Logout */}
             <Button
                 mode="contained"
-                onPress={() => console.log('Editar perfil')}
-                style={styles.editButton}
-                buttonColor="#FFC107" // Amarelo
-                textColor="#FFFFFF" // Texto branco
-                icon="pencil"
+                onPress={handleLogout}
+                style={styles.logoutButton}
+                buttonColor="#FF5252"
+                textColor="#FFFFFF"
+                icon="logout"
             >
-                Editar Perfil
+                Sair
             </Button>
         </ScrollView>
     );
@@ -112,19 +141,19 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
-        padding: 16,
-        backgroundColor: '#F5F5F5', // Fundo cinza claro
+        padding: 8,
+        backgroundColor: '#F5F5F5',
     },
     card: {
         marginBottom: 16,
-        borderRadius: 16,
+        borderRadius: 8,
         elevation: 4,
-        backgroundColor: '#FFFFFF', // Fundo branco
+        backgroundColor: '#FFFFFF',
     },
     title: {
         fontSize: 20,
-        fontFamily: 'Poppins_700Bold', // Fonte personalizada
-        color: '#333333', // Cinza escuro
+        fontFamily: 'Poppins_700Bold',
+        color: '#333333',
         marginBottom: 16,
     },
     profileInfo: {
@@ -132,26 +161,26 @@ const styles = StyleSheet.create({
     },
     userName: {
         fontSize: 22,
-        fontFamily: 'Poppins_700Bold', // Fonte personalizada
-        color: '#333333', // Cinza escuro
+        fontFamily: 'Poppins_700Bold',
+        color: '#333333',
         marginTop: 8,
     },
     levelText: {
         fontSize: 16,
-        fontFamily: 'Poppins_400Regular', // Fonte personalizada
-        color: '#555555', // Cinza médio
+        fontFamily: 'Poppins_400Regular',
+        color: '#555555',
         marginBottom: 8,
     },
     progressBar: {
         height: 10,
         borderRadius: 5,
-        backgroundColor: '#E0E0E0', // Cinza claro
+        backgroundColor: '#E0E0E0',
         marginBottom: 8,
     },
     xpText: {
         fontSize: 14,
-        fontFamily: 'Poppins_400Regular', // Fonte personalizada
-        color: '#666666', // Cinza médio
+        fontFamily: 'Poppins_400Regular',
+        color: '#666666',
     },
     badgeItem: {
         flexDirection: 'row',
@@ -163,29 +192,35 @@ const styles = StyleSheet.create({
     },
     badgeName: {
         fontSize: 16,
-        fontFamily: 'Poppins_700Bold', // Fonte personalizada
-        color: '#333333', // Cinza escuro
+        fontFamily: 'Poppins_700Bold',
+        color: '#333333',
     },
     badgeDescription: {
         fontSize: 14,
-        fontFamily: 'Poppins_400Regular', // Fonte personalizada
-        color: '#666666', // Cinza médio
-    },
-    coinContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    coinText: {
-        fontSize: 16,
-        fontFamily: 'Poppins_700Bold', // Fonte personalizada
-        color: '#333333', // Cinza escuro
-        marginLeft: 8,
+        fontFamily: 'Poppins_400Regular',
+        color: '#666666',
     },
     button: {
         marginTop: 8,
     },
     editButton: {
         marginTop: 16,
+    },
+    logoutButton: {
+        marginTop: 16,
+        marginBottom: 32,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5F5F5',
+    },
+    loadingText: {
+        marginTop: 16,
+        fontSize: 16,
+        fontFamily: 'Poppins_400Regular',
+        color: '#333333',
     },
 });
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "586618627084",
+    "project_id": "electrify-63af2",
+    "storage_bucket": "electrify-63af2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586618627084:android:4e8d76104fbfe125fa3a29",
+        "android_client_info": {
+          "package_name": "com.electrify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586618627084-6s8fgr7fu3ejfhhj54iaojsjuvhuve95.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmHW4OuY8utBZVBA_9Uqishu4u0i2-mjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586618627084-6s8fgr7fu3ejfhhj54iaojsjuvhuve95.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
