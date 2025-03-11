@@ -1,4 +1,3 @@
-```markdown
 # Electrify ⚡
 
 <img src="https://via.placeholder.com/150" alt="Electrify Logo" width="300" /> <!-- Adicione o link da logo do projeto aqui -->
@@ -152,4 +151,3 @@ Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICEN
 ---
 
 Feito com ❤️ por [João Batista](https://github.com/joaobatista235).
-```
