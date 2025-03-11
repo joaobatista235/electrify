@@ -1,3 +1,4 @@
+```markdown
 # Electrify ⚡
 
 ![Electrify Logo](https://via.placeholder.com/150) <!-- Adicione o link da logo do projeto aqui -->
@@ -66,3 +67,89 @@ Siga os passos abaixo para rodar o projeto localmente:
    ```bash
    git clone https://github.com/seu-usuario/electrify.git
    cd electrify
+   ```
+
+2. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure o Firebase**:
+   - Crie um projeto no [Firebase Console](https://console.firebase.google.com/).
+   - Adicione as credenciais do Firebase no arquivo `firebaseConfig.js`.
+   - Ative o **Firestore** e o **Authentication** no Firebase Console.
+
+4. **Execute o projeto**:
+   ```bash
+   expo start
+   ```
+   - Escaneie o QR code com o aplicativo **Expo Go** (disponível na App Store e Google Play).
+   - Ou execute em um emulador:
+     ```bash
+     expo run:android
+     ```
+     ```bash
+     expo run:ios
+     ```
+
+---
+
+## Estrutura do Projeto 🗂️
+
+```
+electrify/
+├── assets/               # Arquivos estáticos (imagens, ícones)
+├── src/                  # Código-fonte do projeto
+│   ├── components/       # Componentes reutilizáveis
+│   ├── screens/          # Telas do aplicativo
+│   ├── firebase/         # Configuração do Firebase
+│   ├── utils/            # Utilitários e funções auxiliares
+│   └── App.js            # Ponto de entrada do aplicativo
+├── .gitignore            # Arquivos ignorados pelo Git
+├── package.json          # Dependências do projeto
+└── README.md             # Documentação do projeto
+```
+
+---
+
+## Capturas de Tela 📸
+
+| Tela de Login | Tela de Registro | Tela de Consumo |
+|---------------|------------------|-----------------|
+| ![Login](https://via.placeholder.com/300) | ![Registro](https://via.placeholder.com/300) | ![Consumo](https://via.placeholder.com/300) |
+
+| Tela de Badges | Tela de Dicas | Tela de Perfil |
+|----------------|---------------|----------------|
+| ![Badges](https://via.placeholder.com/300) | ![Dicas](https://via.placeholder.com/300) | ![Perfil](https://via.placeholder.com/300) |
+
+---
+
+## Contribuição 🤝
+
+Contribuições são bem-vindas! Siga os passos abaixo:
+
+1. Faça um fork do projeto.
+2. Crie uma branch para sua feature:
+   ```bash
+   git checkout -b feature/nova-feature
+   ```
+3. Commit suas alterações:
+   ```bash
+   git commit -m "Adiciona nova feature"
+   ```
+4. Envie as alterações:
+   ```bash
+   git push origin feature/nova-feature
+   ```
+5. Abra um Pull Request.
+
+---
+
+## Licença 📜
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+Feito com ❤️ por [João Batista](https://github.com/joaobatista235).
+```
