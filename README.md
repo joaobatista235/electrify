@@ -1,7 +1,7 @@
 ```markdown
 # Electrify ⚡
 
-![Electrify Logo](https://via.placeholder.com/150) <!-- Adicione o link da logo do projeto aqui -->
+<img src="https://via.placeholder.com/150" alt="Electrify Logo" width="300" /> <!-- Adicione o link da logo do projeto aqui -->
 
 **Electrify** é um aplicativo mobile desenvolvido em React Native que permite monitorar e analisar o consumo de energia elétrica em tempo real. Com insights personalizados, o app ajuda os usuários a economizarem energia e reduzirem custos.
 
@@ -116,11 +116,11 @@ electrify/
 
 | Tela de Login | Tela de Registro | Tela de Consumo |
 |---------------|------------------|-----------------|
-| ![Login](https://via.placeholder.com/300) | ![Registro](https://via.placeholder.com/300) | ![Consumo](https://via.placeholder.com/300) |
+| <img src="https://via.placeholder.com/300" width="200" /> | <img src="https://via.placeholder.com/300" width="200" /> | <img src="https://via.placeholder.com/300" width="200" /> |
 
 | Tela de Badges | Tela de Dicas | Tela de Perfil |
 |----------------|---------------|----------------|
-| ![Badges](https://via.placeholder.com/300) | ![Dicas](https://via.placeholder.com/300) | ![Perfil](https://via.placeholder.com/300) |
+| <img src="https://via.placeholder.com/300" width="200" /> | <img src="https://via.placeholder.com/300" width="200" /> | <img src="https://via.placeholder.com/300" width="200" /> |
 
 ---
 
