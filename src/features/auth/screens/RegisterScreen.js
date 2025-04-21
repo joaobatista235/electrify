@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../../firebase/firebaseConfig';
+import { auth, db, firebase } from '../../../firebase/firebaseConfig';
 
 export default function RegisterScreen() {
     const navigation = useNavigation();
@@ -55,14 +53,10 @@ export default function RegisterScreen() {
 
         setLoading(true);
         try {
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+            const userCredential = await auth().createUserWithEmailAndPassword(email, password);
             const user = userCredential.user;
 
-            await setDoc(doc(db, 'users', user.uid), {
+            await db.collection('users').doc(user.uid).set({
                 name: name,
                 level: 1,
                 xp: 0,
@@ -71,7 +65,10 @@ export default function RegisterScreen() {
             });
 
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-            navigation.navigate('Login');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }]
+            });
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 setEmailError('Este e-mail já está em uso.');

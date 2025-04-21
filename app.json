@@ -2,6 +2,11 @@
   "expo": {
     "name": "electrify",
     "slug": "electrify",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "13e57942-7a16-43c7-b79c-29094fa9cf81"
+      }
+    }
   }
 }

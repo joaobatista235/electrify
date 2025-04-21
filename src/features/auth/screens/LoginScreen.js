@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, Text, Card, Checkbox } from 'react-native-paper';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../firebase/firebaseConfig';
 
 export default function LoginScreen() {
@@ -51,13 +50,7 @@ export default function LoginScreen() {
 
         setLoading(true);
         try {
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
-            const user = userCredential.user;
-            console.log(user);
+            await auth().signInWithEmailAndPassword(email, password);
 
             // Salvar credenciais se "Lembrar login" estiver marcado
             if (rememberMe) {
@@ -69,7 +62,10 @@ export default function LoginScreen() {
             }
 
             Alert.alert('Sucesso', 'Login realizado com sucesso!');
-            navigation.navigate('Main');
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Main' }]
+            });
         } catch (error) {
             if (error.code === 'auth/invalid-email') {
                 setEmailError('E-mail inválido.');
