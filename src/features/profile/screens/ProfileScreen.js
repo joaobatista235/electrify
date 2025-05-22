@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import { MaterialIcons, FontAwesome5, Feather } from '@expo/vector-icons';
 import { useFonts, Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import { auth, db, firebase } from '../../../firebase/firebaseConfig';
@@ -653,149 +653,178 @@ export default function ProfileScreen({ navigation }) {
 
   if (!fontsLoaded || loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FFC107" />
-        <Text style={styles.loadingText}>Carregando perfil...</Text>
-      </View>
+      <>
+        <StatusBar 
+          backgroundColor="#F5F5F5" 
+          barStyle="dark-content" 
+          translucent={false}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FFC107" />
+          <Text style={styles.loadingText}>Carregando perfil...</Text>
+        </View>
+      </>
     );
+  }
+
+  if (!fontsLoaded) {
+    return null;
   }
 
   return (
     <Provider>
-      <ScrollView style={styles.container}>
-        {/* Cabeçalho do Perfil */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.avatarContainer}
-            onPress={() => setShowEditProfileDialog(true)}
-          >
-            {userData?.photoURL ? (
-              <Image
-                source={{ uri: userData.photoURL }}
-                style={styles.avatarImage}
-              />
-            ) : (
-              <FontAwesome5 name={getAvatarIcon()} size={50} color="#FFC107" />
-            )}
-            <View style={styles.editIconContainer}>
-              <MaterialIcons name="edit" size={16} color="#FFFFFF" />
-            </View>
-          </TouchableOpacity>
-          <Text style={styles.userName}>{userData?.name}</Text>
-          <Text style={styles.email}>{userData?.email}</Text>
-        </View>
-
-        {/* Nível e Progresso */}
-        <View style={styles.levelContainer}>
-          <View style={styles.levelHeader}>
-            <Text style={styles.levelTitle}>Nível {level}</Text>
-            <Text style={styles.levelSubtitle}>{userData?.levelTitle}</Text>
-          </View>
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${progress}%` }]} />
-            </View>
-            <Text style={styles.progressText}>{userData?.xp} XP • {progress}% para o próximo nível</Text>
-          </View>
-        </View>
-
-        {/* Card de Estatísticas */}
-        <Card style={styles.card}>
-          <Card.Content>
-            <Text style={styles.cardTitle}>Estatísticas</Text>
-            <View style={styles.statsContainer}>
-              {/* Primeira linha: Dicas Lidas e Registros */}
-              <View style={styles.statsRow}>
-                <View style={styles.statItem}>
-                  <MaterialIcons name="lightbulb" size={24} color="#FFC107" />
-                  <View style={styles.statTextContainer}>
-                    <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Dicas lidas</Text>
-                    <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>{userData?.readTips || 0}</Text>
-                  </View>
-                </View>
-                <View style={styles.statDivider} />
-                <View style={styles.statItem}>
-                  <MaterialIcons name="speed" size={24} color="#FFC107" />
-                  <View style={styles.statTextContainer}>
-                    <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Registros</Text>
-                    <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>{userData?.totalConsumptionEntries || 0}</Text>
-                  </View>
-                </View>
-              </View>
-              
-              {/* Segunda linha: Membro desde */}
-              <View style={styles.statsRowSingle}>
-                <View style={[styles.statItem, styles.statItemCenter]}>
-                  <MaterialIcons name="calendar-today" size={24} color="#FFC107" />
-                  <View style={styles.statTextContainer}>
-                    <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Membro desde</Text>
-                    <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>
-                      {userData?.creationTime
-                        ? formatDate(userData.creationTime)
-                        : 'N/A'}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-
-        {/* Conquistas */}
-        <View style={styles.badgesContainer}>
-          <View style={styles.badgesHeader}>
-            <Text style={styles.sectionTitle}>Conquistas</Text>
-            <Button
-              mode="text"
-              onPress={() => setShowAllAchievements(true)}
-              icon="trophy"
-              textColor="#FFC107"
-            >
-              Ver todas
-            </Button>
-          </View>
-
-          {badges.length > 0 ? (
-            <View style={styles.badgesGrid}>
-              {badges.slice(0, 4).map(badge => (
-                <View key={badge.id} style={styles.badgeItem}>
-                  <MaterialIcons name={badge.icon} size={36} color="#FFC107" />
-                  <Text style={styles.badgeName}>{badge.name}</Text>
-                  <Text style={styles.badgeDesc}>{badge.description}</Text>
-                </View>
-              ))}
-              {badges.length > 4 && (
-                <TouchableOpacity
-                  style={styles.moreBadgesButton}
-                  onPress={() => setShowAllAchievements(true)}
-                >
-                  <Text style={styles.moreBadgesText}>+{badges.length - 4} mais</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          ) : (
-            <View style={styles.emptyBadges}>
-              <MaterialIcons name="emoji-events" size={50} color="#E0E0E0" />
-              <Text style={styles.emptyBadgesText}>Nenhuma conquista ainda</Text>
-              <Text style={styles.emptyBadgesSubtext}>Visite a seção de dicas e economize energia para desbloquear conquistas!</Text>
-            </View>
-          )}
-        </View>
-
-        {/* Botão de Logout */}
-        <Button
-          mode="contained"
-          onPress={handleLogout}
-          style={styles.logoutButton}
-          buttonColor="#FF5252"
-          textColor="#FFFFFF"
-          icon="logout"
+      <Portal>
+        <StatusBar 
+          backgroundColor="#F5F5F5" 
+          barStyle="dark-content" 
+          translucent={false}
+        />
+        <ScrollView 
+          style={styles.container}
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
         >
-          Sair da conta
-        </Button>
+          {/* Cabeçalho do Perfil com botão de ajuda integrado */}
+          <View style={styles.header}>
+            <View style={styles.headerActions}>
+              <TouchableOpacity 
+                style={styles.helpButton}
+                onPress={() => navigation.navigate('Help')}
+              >
+                <MaterialIcons name="help" size={24} color="#FFC107" />
+              </TouchableOpacity>
+            </View>
+            
+            <TouchableOpacity
+              style={styles.avatarContainer}
+              onPress={() => setShowEditProfileDialog(true)}
+            >
+              {userData?.photoURL ? (
+                <Image
+                  source={{ uri: userData.photoURL }}
+                  style={styles.avatarImage}
+                />
+              ) : (
+                <FontAwesome5 name={getAvatarIcon()} size={50} color="#FFC107" />
+              )}
+              <View style={styles.editIconContainer}>
+                <MaterialIcons name="edit" size={16} color="#FFFFFF" />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.userName}>{userData?.name}</Text>
+            <Text style={styles.email}>{userData?.email}</Text>
+          </View>
 
-        {/* Diálogo de todas as conquistas */}
-        <Portal>
+          {/* Nível e Progresso */}
+          <View style={styles.levelContainer}>
+            <View style={styles.levelHeader}>
+              <Text style={styles.levelTitle}>Nível {level}</Text>
+              <Text style={styles.levelSubtitle}>{userData?.levelTitle}</Text>
+            </View>
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: `${progress}%` }]} />
+              </View>
+              <Text style={styles.progressText}>{userData?.xp} XP • {progress}% para o próximo nível</Text>
+            </View>
+          </View>
+
+          {/* Card de Estatísticas */}
+          <Card style={styles.card}>
+            <Card.Content>
+              <Text style={styles.cardTitle}>Estatísticas</Text>
+              <View style={styles.statsContainer}>
+                {/* Primeira linha: Dicas Lidas e Registros */}
+                <View style={styles.statsRow}>
+                  <View style={styles.statItem}>
+                    <MaterialIcons name="lightbulb" size={24} color="#FFC107" />
+                    <View style={styles.statTextContainer}>
+                      <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Dicas lidas</Text>
+                      <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>{userData?.readTips || 0}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.statDivider} />
+                  <View style={styles.statItem}>
+                    <MaterialIcons name="speed" size={24} color="#FFC107" />
+                    <View style={styles.statTextContainer}>
+                      <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Registros</Text>
+                      <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>{userData?.totalConsumptionEntries || 0}</Text>
+                    </View>
+                  </View>
+                </View>
+                
+                {/* Segunda linha: Membro desde */}
+                <View style={styles.statsRowSingle}>
+                  <View style={[styles.statItem, styles.statItemCenter]}>
+                    <MaterialIcons name="calendar-today" size={24} color="#FFC107" />
+                    <View style={styles.statTextContainer}>
+                      <Text style={styles.statLabel} ellipsizeMode="tail" numberOfLines={1}>Membro desde</Text>
+                      <Text style={styles.statValue} ellipsizeMode="tail" numberOfLines={1}>
+                        {userData?.creationTime
+                          ? formatDate(userData.creationTime)
+                          : 'N/A'}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </Card.Content>
+          </Card>
+
+          {/* Conquistas */}
+          <View style={styles.badgesContainer}>
+            <View style={styles.badgesHeader}>
+              <Text style={styles.sectionTitle}>Conquistas</Text>
+              <Button
+                mode="text"
+                onPress={() => setShowAllAchievements(true)}
+                icon="trophy"
+                textColor="#FFC107"
+              >
+                Ver todas
+              </Button>
+            </View>
+
+            {badges.length > 0 ? (
+              <View style={styles.badgesGrid}>
+                {badges.slice(0, 4).map(badge => (
+                  <View key={badge.id} style={styles.badgeItem}>
+                    <MaterialIcons name={badge.icon} size={36} color="#FFC107" />
+                    <Text style={styles.badgeName}>{badge.name}</Text>
+                    <Text style={styles.badgeDesc}>{badge.description}</Text>
+                  </View>
+                ))}
+                {badges.length > 4 && (
+                  <TouchableOpacity
+                    style={styles.moreBadgesButton}
+                    onPress={() => setShowAllAchievements(true)}
+                  >
+                    <Text style={styles.moreBadgesText}>+{badges.length - 4} mais</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <View style={styles.emptyBadges}>
+                <MaterialIcons name="emoji-events" size={50} color="#E0E0E0" />
+                <Text style={styles.emptyBadgesText}>Nenhuma conquista ainda</Text>
+                <Text style={styles.emptyBadgesSubtext}>Visite a seção de dicas e economize energia para desbloquear conquistas!</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Botão de Logout */}
+          <Button
+            mode="contained"
+            onPress={handleLogout}
+            style={styles.logoutButton}
+            buttonColor="#FF5252"
+            textColor="#FFFFFF"
+            icon="logout"
+          >
+            Sair da conta
+          </Button>
+
+          {/* Diálogo de todas as conquistas */}
           <Dialog
             visible={showAllAchievements}
             onDismiss={() => setShowAllAchievements(false)}
@@ -852,10 +881,8 @@ export default function ProfileScreen({ navigation }) {
               </Button>
             </Dialog.Actions>
           </Dialog>
-        </Portal>
 
-        {/* Diálogo de level up */}
-        <Portal>
+          {/* Diálogo de level up */}
           <Dialog
             visible={showLevelUpDialog}
             onDismiss={() => setShowLevelUpDialog(false)}
@@ -895,10 +922,8 @@ export default function ProfileScreen({ navigation }) {
               </Button>
             </Dialog.Actions>
           </Dialog>
-        </Portal>
 
-        {/* Diálogo de edição de perfil */}
-        <Portal>
+          {/* Diálogo de edição de perfil */}
           <Dialog
             visible={showEditProfileDialog}
             onDismiss={() => {
@@ -1057,8 +1082,8 @@ export default function ProfileScreen({ navigation }) {
               </Button>
             </Dialog.Actions>
           </Dialog>
-        </Portal>
-      </ScrollView>
+        </ScrollView>
+      </Portal>
     </Provider>
   );
 }
@@ -1067,12 +1092,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+    paddingTop: 0,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
+    paddingTop: 0,
   },
   loadingText: {
     marginTop: 16,
@@ -1090,6 +1117,27 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    position: 'relative',
+    marginTop: 0,
+  },
+  headerActions: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 10,
+  },
+  helpButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.5,
   },
   avatarContainer: {
     width: 80,
@@ -1542,5 +1590,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_700Bold',
     color: '#333',
     marginBottom: 12,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    paddingBottom: 32, // Adicionar padding para o botão de logout
   },
 });

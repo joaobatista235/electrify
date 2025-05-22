@@ -7,8 +7,21 @@ import DashboardScreen from '../dashboard/screens/DashboardScreen';
 import SimulatorScreen from '../simulator/screens/SimulatorScreen';
 import ProfileScreen from '../profile/screens/ProfileScreen';
 import TipsScreen from '../tips/screens/TipsScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { HelpScreen } from '../help';
 
 const Tab = createBottomTabNavigator();
+const ProfileStack = createNativeStackNavigator();
+
+// Navegador de pilha para a seção de perfil
+const ProfileStackScreen = () => {
+  return (
+    <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+      <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
+      <ProfileStack.Screen name="Help" component={HelpScreen} />
+    </ProfileStack.Navigator>
+  );
+};
 
 export default function MainTabs() {
     return (
@@ -55,7 +68,7 @@ export default function MainTabs() {
             />
             <Tab.Screen
                 name="Perfil"
-                component={ProfileScreen}
+                component={ProfileStackScreen}
                 options={{
                     tabBarLabel: 'Perfil',
                     tabBarIcon: ({ color, size }) => (

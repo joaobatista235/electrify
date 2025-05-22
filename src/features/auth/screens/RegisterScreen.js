@@ -62,12 +62,13 @@ export default function RegisterScreen() {
                 xp: 0,
                 xpToNextLevel: 100,
                 badges: [],
+                hasSeenOnboarding: false,
             });
 
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Login' }]
+                routes: [{ name: 'Main' }]
             });
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {

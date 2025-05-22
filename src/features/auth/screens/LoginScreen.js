@@ -61,7 +61,7 @@ export default function LoginScreen() {
                 await AsyncStorage.removeItem('password');
             }
 
-            Alert.alert('Sucesso', 'Login realizado com sucesso!');
+            // Não precisamos mostrar alerta, vamos navegar diretamente
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Main' }]
