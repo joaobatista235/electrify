@@ -15,7 +15,6 @@ export default function LoginScreen() {
     const [passwordError, setPasswordError] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
-    // Verificar se há credenciais salvas ao carregar a tela
     useEffect(() => {
         const loadSavedCredentials = async () => {
             try {
@@ -52,7 +51,6 @@ export default function LoginScreen() {
         try {
             await auth().signInWithEmailAndPassword(email, password);
 
-            // Salvar credenciais se "Lembrar login" estiver marcado
             if (rememberMe) {
                 await AsyncStorage.setItem('email', email);
                 await AsyncStorage.setItem('password', password);
@@ -61,7 +59,6 @@ export default function LoginScreen() {
                 await AsyncStorage.removeItem('password');
             }
 
-            // Não precisamos mostrar alerta, vamos navegar diretamente
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Main' }]

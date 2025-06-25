@@ -7,13 +7,10 @@ import { auth, db, firebase } from '../../../firebase/firebaseConfig';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SummaryCard from '../components/SummaryCard';
 
-// Largura da tela
 const screenWidth = Dimensions.get('window').width;
 
-// Preço do kWh (valor fixo para cálculos)
 const KWH_PRICE = 0.75;
 
-// Mapeamento de nomes de meses em português
 const MONTH_NAMES = [
   'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
   'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
@@ -35,12 +32,10 @@ export default function DashboardScreen() {
     current: 0,
   });
 
-  // Modal de adição de consumo
   const [consumptionDialogVisible, setConsumptionDialogVisible] = useState(false);
   const [newConsumption, setNewConsumption] = useState('');
   const [consumptionError, setConsumptionError] = useState('');
 
-  // Estado para a data selecionada
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
@@ -60,7 +55,6 @@ export default function DashboardScreen() {
     return years;
   });
 
-  // Fonte
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
@@ -70,7 +64,6 @@ export default function DashboardScreen() {
     loadUserConsumptionData();
   }, []);
 
-  // Carregar dados de consumo do Firebase
   const loadUserConsumptionData = async () => {
     try {
       setLoading(true);
@@ -85,15 +78,12 @@ export default function DashboardScreen() {
       if (userDoc.exists && userDoc.data().consumption) {
         const consumption = userDoc.data().consumption;
 
-        // Processar dados para gráficos
         const processedData = processConsumptionData(consumption);
         setConsumptionData(processedData);
 
-        // Calcular resumo
         const summary = calculateSummary(consumption);
         setSummaryData(summary);
       } else {
-        // Inicializar documento se não existir
         const initialData = {
           consumption: []
         };
@@ -112,18 +102,13 @@ export default function DashboardScreen() {
     }
   };
 
-  // Processar dados para gráficos
   const processConsumptionData = (consumption) => {
-    // Ordenar por data (mais recente primeiro)
     const sortedData = [...consumption].sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
 
-    // Dados diários (últimos 7 dias)
     const dailyData = getDailyData(sortedData);
 
-    // Dados semanais (últimas 4 semanas)
     const weeklyData = getWeeklyData(sortedData);
 
-    // Dados mensais (últimos 6 meses)
     const monthlyData = getMonthlyData(sortedData);
 
     return {
@@ -133,33 +118,27 @@ export default function DashboardScreen() {
     };
   };
 
-  // Extrair dados diários
   const getDailyData = (data) => {
     const now = new Date();
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(now.getDate() - 7);
 
-    // Filtrar últimos 7 dias
     const filteredData = data.filter(item => {
       const date = item.timestamp.toDate();
       return date >= sevenDaysAgo;
     });
 
-    // Agrupar por dia
     const dailyMap = {};
     const labels = [];
 
-    // Inicializar com zero para todos os dias
     for (let i = 6; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
-      // Usar formato mais curto para labels
       const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-      labels.push(dateStr.split('/')[0]); // Apenas o dia
+      labels.push(dateStr.split('/')[0]);
       dailyMap[dateStr] = 0;
     }
 
-    // Somar valores por dia
     filteredData.forEach(item => {
       const date = item.timestamp.toDate();
       const dateStr = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
@@ -175,43 +154,35 @@ export default function DashboardScreen() {
     };
   };
 
-  // Extrair dados semanais
   const getWeeklyData = (data) => {
     const now = new Date();
     const fourWeeksAgo = new Date();
     fourWeeksAgo.setDate(now.getDate() - 28);
 
-    // Filtrar últimas 4 semanas
     const filteredData = data.filter(item => {
       const date = item.timestamp.toDate();
       return date >= fourWeeksAgo;
     });
 
-    // Agrupar por semana
     const weeklyMap = {};
     const labels = [];
 
-    // Inicializar semanas - usar formato mais curto para labels
     for (let i = 3; i >= 0; i--) {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - (i * 7 + 6));
 
-      // Formato simplificado para semanas: "S1", "S2", etc.
       const weekLabel = `S${4 - i}`;
       labels.push(weekLabel);
 
-      // Manter mapeamento para somar valores
       const dateKey = startDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
       weeklyMap[dateKey] = 0;
     }
 
-    // Somar valores por semana
     filteredData.forEach(item => {
       const date = item.timestamp.toDate();
       const weekIndex = Math.floor((now - date) / (7 * 24 * 60 * 60 * 1000));
 
       if (weekIndex >= 0 && weekIndex < 4) {
-        // Adicionar ao valor da semana correspondente
         const dateKeys = Object.keys(weeklyMap);
         if (dateKeys[weekIndex]) {
           weeklyMap[dateKeys[weekIndex]] += item.kwh;
@@ -225,38 +196,31 @@ export default function DashboardScreen() {
     };
   };
 
-  // Extrair dados mensais
   const getMonthlyData = (data) => {
     const now = new Date();
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(now.getMonth() - 6);
 
-    // Filtrar últimos 6 meses
     const filteredData = data.filter(item => {
       const date = item.timestamp.toDate();
       return date >= sixMonthsAgo;
     });
 
-    // Agrupar por mês
     const monthlyMap = {};
     const labels = [];
     const valuesList = [];
 
-    // Inicializar meses com nomes completos em português
     for (let i = 5; i >= 0; i--) {
       const date = new Date();
       date.setMonth(date.getMonth() - i);
-      // Obter o nome do mês em português
       const monthName = MONTH_NAMES[date.getMonth()];
 
-      // Obter mês e ano para chave completa
       const monthKey = date.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' });
 
       labels.push(monthName);
       monthlyMap[monthKey] = 0;
     }
 
-    // Somar valores por mês
     filteredData.forEach(item => {
       const date = item.timestamp.toDate();
       const monthKey = date.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' });
@@ -266,7 +230,6 @@ export default function DashboardScreen() {
       }
     });
 
-    // Converter para array na ordem correta
     Object.keys(monthlyMap).forEach(key => {
       valuesList.push(monthlyMap[key]);
     });
@@ -277,7 +240,6 @@ export default function DashboardScreen() {
     };
   };
 
-  // Calcular dados de resumo
   const calculateSummary = (consumption) => {
     if (!consumption || consumption.length === 0) {
       return {
@@ -289,10 +251,8 @@ export default function DashboardScreen() {
       };
     }
 
-    // Ordenar por data (mais recente primeiro)
     const sortedData = [...consumption].sort((a, b) => b.timestamp.toDate() - a.timestamp.toDate());
 
-    // Consumo total (últimos 30 dias)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -304,7 +264,6 @@ export default function DashboardScreen() {
     const totalConsumption = recentConsumption.reduce((total, item) => total + item.kwh, 0);
     const totalPrice = totalConsumption * KWH_PRICE;
 
-    // Estimativa para o mês atual
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -316,11 +275,9 @@ export default function DashboardScreen() {
 
     const currentMonthConsumption = currentMonthData.reduce((total, item) => total + item.kwh, 0);
 
-    // Dias decorridos no mês atual
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     const daysPassed = Math.min(now.getDate(), daysInMonth);
 
-    // Estimativa para o mês completo
     const estimatedMonthlyConsumption = (currentMonthConsumption / daysPassed) * daysInMonth;
     const estimatedCost = estimatedMonthlyConsumption * KWH_PRICE;
 
@@ -333,12 +290,10 @@ export default function DashboardScreen() {
     };
   };
 
-  // Formatar data para exibição
   const formatDisplayDate = (date) => {
     return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
-  // Selecionar dia
   const selectDay = (day) => {
     const newDate = new Date(selectedDate);
     newDate.setDate(day);
@@ -346,29 +301,24 @@ export default function DashboardScreen() {
     setShowDatePicker(false);
   };
 
-  // Selecionar mês
   const selectMonth = (month) => {
     const newDate = new Date(selectedDate);
     newDate.setMonth(month);
     setSelectedDate(newDate);
     setShowMonthPicker(false);
 
-    // Mostrar seletor de dia após selecionar mês
     setShowDatePicker(true);
   };
 
-  // Selecionar ano
   const selectYear = (year) => {
     const newDate = new Date(selectedDate);
     newDate.setFullYear(year);
     setSelectedDate(newDate);
     setShowYearPicker(false);
 
-    // Mostrar seletor de mês após selecionar ano
     setShowMonthPicker(true);
   };
 
-  // Gerar dias do mês atual
   const getDaysInMonth = () => {
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth();
@@ -381,12 +331,10 @@ export default function DashboardScreen() {
     return days;
   };
 
-  // Abrir seletor de data
   const openDatePicker = () => {
     setShowYearPicker(true);
   };
 
-  // Adicionar novo registro de consumo
   const handleAddConsumption = async () => {
     setConsumptionError('');
 
@@ -406,11 +354,9 @@ export default function DashboardScreen() {
       const user = auth().currentUser;
       if (!user) return;
 
-      // Ajustar a data selecionada para meio-dia para evitar problemas de fuso horário
       const adjustedDate = new Date(selectedDate);
       adjustedDate.setHours(12, 0, 0, 0);
 
-      // Usamos o Timestamp.fromDate() para consistência
       const timestamp = firebase.firestore.Timestamp.fromDate(adjustedDate);
 
       const newEntry = {
@@ -437,10 +383,9 @@ export default function DashboardScreen() {
 
       setConsumptionDialogVisible(false);
       setNewConsumption('');
-      setSelectedDate(new Date()); // Resetar para a data atual após adicionar
+      setSelectedDate(new Date());
       setShowDatePicker(false);
 
-      // Recarregar dados
       await loadUserConsumptionData();
 
       Alert.alert('Sucesso', 'Consumo registrado com sucesso!');
@@ -462,7 +407,6 @@ export default function DashboardScreen() {
     );
   }
 
-  // Preparar dados para o gráfico
   const chartData = {
     labels: consumptionData[dataPeriod].labels || [],
     datasets: [
@@ -474,7 +418,6 @@ export default function DashboardScreen() {
     ],
   };
 
-  // Obter legenda baseada no período
   const getLegendText = () => {
     switch (dataPeriod) {
       case 'daily':
@@ -636,7 +579,7 @@ export default function DashboardScreen() {
             <Portal>
               {/* Seletor de Ano */}
               <Dialog visible={showYearPicker} onDismiss={() => setShowYearPicker(false)} style={{ backgroundColor: '#FFFFFF' }}>
-                <Dialog.Title>Selecione o Ano</Dialog.Title>
+                <Dialog.Title style={styles.dialogTitle}>Selecione o Ano</Dialog.Title>
                 <Dialog.Content>
                   <ScrollView style={styles.datePickerScrollView}>
                     {yearsList.map((year) => (
@@ -645,19 +588,22 @@ export default function DashboardScreen() {
                         title={year.toString()}
                         onPress={() => selectYear(year)}
                         style={selectedDate.getFullYear() === year ? styles.selectedDateItem : null}
-                        titleStyle={selectedDate.getFullYear() === year ? styles.selectedDateItemText : null}
+                        titleStyle={[
+                          { color: '#333333', fontFamily: 'Poppins_400Regular' },
+                          selectedDate.getFullYear() === year ? styles.selectedDateItemText : null
+                        ]}
                       />
                     ))}
                   </ScrollView>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setShowYearPicker(false)}>Cancelar</Button>
+                  <Button onPress={() => setShowYearPicker(false)} textColor="#757575">Cancelar</Button>
                 </Dialog.Actions>
               </Dialog>
 
               {/* Seletor de Mês */}
               <Dialog visible={showMonthPicker} onDismiss={() => setShowMonthPicker(false)} style={{ backgroundColor: '#FFFFFF' }}>
-                <Dialog.Title>Selecione o Mês</Dialog.Title>
+                <Dialog.Title style={styles.dialogTitle}>Selecione o Mês</Dialog.Title>
                 <Dialog.Content>
                   <ScrollView style={styles.datePickerScrollView}>
                     {monthsList.map((month, index) => (
@@ -666,19 +612,22 @@ export default function DashboardScreen() {
                         title={month}
                         onPress={() => selectMonth(index)}
                         style={selectedDate.getMonth() === index ? styles.selectedDateItem : null}
-                        titleStyle={selectedDate.getMonth() === index ? styles.selectedDateItemText : null}
+                        titleStyle={[
+                          { color: '#333333', fontFamily: 'Poppins_400Regular' },
+                          selectedDate.getMonth() === index ? styles.selectedDateItemText : null
+                        ]}
                       />
                     ))}
                   </ScrollView>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setShowMonthPicker(false)}>Cancelar</Button>
+                  <Button onPress={() => setShowMonthPicker(false)} textColor="#757575">Cancelar</Button>
                 </Dialog.Actions>
               </Dialog>
 
               {/* Seletor de Dia */}
               <Dialog visible={showDatePicker} onDismiss={() => setShowDatePicker(false)} style={{ backgroundColor: '#FFFFFF' }}>
-                <Dialog.Title>Selecione o Dia</Dialog.Title>
+                <Dialog.Title style={styles.dialogTitle}>Selecione o Dia</Dialog.Title>
                 <Dialog.Content>
                   <ScrollView style={styles.datePickerScrollView}>
                     <View style={styles.daysContainer}>
@@ -705,7 +654,7 @@ export default function DashboardScreen() {
                   </ScrollView>
                 </Dialog.Content>
                 <Dialog.Actions>
-                  <Button onPress={() => setShowDatePicker(false)}>Cancelar</Button>
+                  <Button onPress={() => setShowDatePicker(false)} textColor="#757575">Cancelar</Button>
                 </Dialog.Actions>
               </Dialog>
             </Portal>
@@ -718,10 +667,17 @@ export default function DashboardScreen() {
               value={newConsumption}
               onChangeText={setNewConsumption}
               keyboardType="numeric"
-              style={styles.input}
+              style={[styles.input, { color: '#333333' }]}
+              inputStyle={{ color: '#333333' }}
               error={!!consumptionError}
               outlineColor="#E0E0E0"
               activeOutlineColor="#FFC107"
+              theme={{
+                colors: {
+                  text: '#333333',
+                  placeholder: '#757575'
+                }
+              }}
             />
             {consumptionError ? <Text style={styles.errorText}>{consumptionError}</Text> : null}
           </Dialog.Content>
@@ -926,6 +882,7 @@ const styles = StyleSheet.create({
   // Novos estilos para o DatePicker personalizado
   datePickerScrollView: {
     maxHeight: 250,
+    color: 'black',
   },
   selectedDateItem: {
     backgroundColor: '#FFF9E0',

@@ -25,7 +25,6 @@ const XP_PER_LEVEL = {
   10: 2000,
 };
 
-// Definição das conquistas disponíveis
 const ALL_ACHIEVEMENTS = [
   {
     id: 'TIPS_READER_1',
@@ -85,7 +84,6 @@ const ALL_ACHIEVEMENTS = [
   },
 ];
 
-// Função para calcular o nível com base no XP
 const calculateLevel = (xp) => {
   let level = 1;
   for (let i = 10; i >= 1; i--) {
@@ -97,9 +95,8 @@ const calculateLevel = (xp) => {
   return level;
 };
 
-// Função para calcular o progresso percentual para o próximo nível
 const calculateProgress = (xp, level) => {
-  if (level === 10) return 100; // Nível máximo
+  if (level === 10) return 100;
 
   const currentLevelXP = XP_PER_LEVEL[level];
   const nextLevelXP = XP_PER_LEVEL[level + 1];
@@ -109,7 +106,6 @@ const calculateProgress = (xp, level) => {
   return Math.min(100, Math.floor((userProgressInLevel / xpForNextLevel) * 100));
 };
 
-// Função para obter o título baseado no nível
 const getLevelTitle = (level) => {
   const titles = {
     1: 'Iniciante',
@@ -133,20 +129,16 @@ export default function ProfileScreen({ navigation }) {
   const [progress, setProgress] = useState(0);
   const [badges, setBadges] = useState([]);
 
-  // Estado para diálogo de conquistas
   const [showAllAchievements, setShowAllAchievements] = useState(false);
 
-  // Estado para mostrar animação de nível
   const [showLevelUpDialog, setShowLevelUpDialog] = useState(false);
   const [levelUpInfo, setLevelUpInfo] = useState({ oldLevel: 0, newLevel: 0 });
 
-  // Estado para mostrar conquistas recém obtidas
   const [showNewAchievementDialog, setShowNewAchievementDialog] = useState(false);
   const [newAchievement, setNewAchievement] = useState(null);
 
   const [previousXp, setPreviousXp] = useState(0);
 
-  // Estados para edição de perfil
   const [showEditProfileDialog, setShowEditProfileDialog] = useState(false);
   const [editName, setEditName] = useState('');
   const [editEmail, setEditEmail] = useState('');
@@ -155,7 +147,6 @@ export default function ProfileScreen({ navigation }) {
   const [uploading, setUploading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
 
-  // Estados para controle de visibilidade das senhas
   const [currentPasswordVisible, setCurrentPasswordVisible] = useState(false);
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
 
@@ -164,7 +155,6 @@ export default function ProfileScreen({ navigation }) {
     Poppins_700Bold,
   });
 
-  // Atualizar dados quando a tela receber foco
   useFocusEffect(
     React.useCallback(() => {
       loadUserData();
@@ -182,24 +172,20 @@ export default function ProfileScreen({ navigation }) {
         return;
       }
 
-      // Get user document from Firestore
       const userDoc = await db.collection('users').doc(user.uid).get();
 
       if (userDoc.exists) {
         const userData = userDoc.data();
         
-        // Calculate user level based on XP
         const userXp = userData.xp || 0;
         const userLevel = calculateLevel(userXp);
         const levelProgress = calculateProgress(userXp, userLevel);
         const levelTitle = getLevelTitle(userLevel);
         
-        // Parse creation time safely
         let creationTime = null;
         try {
           if (user.metadata && user.metadata.creationTime) {
             creationTime = new Date(user.metadata.creationTime);
-            // Verificar se é uma data válida
             if (isNaN(creationTime.getTime())) {
               creationTime = null;
             }
@@ -208,10 +194,8 @@ export default function ProfileScreen({ navigation }) {
           // Ignora erro ao processar data
         }
         
-        // Determinar qual URL de foto usar - preferir a do Firestore se existir
         let photoURL = userData.photoURL || user.photoURL || null;
         
-        // Set user data in state
         const userDataObj = {
           uid: user.uid,
           name: userData.name || '',
@@ -232,11 +216,9 @@ export default function ProfileScreen({ navigation }) {
         setProgress(levelProgress);
         setBadges(userData.badges || []);
         
-        // Preparar dados para edição
         setEditName(userData.name || '');
         setEditEmail(user.email || '');
       } else {
-        // Se o documento não existir, vamos criar um novo com dados básicos
         const newUserData = {
           name: user.displayName || '',
           email: user.email || '',
@@ -294,25 +276,20 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
-  // Determinar o ícone de avatar baseado no nível
   const getAvatarIcon = () => {
     if (level >= 8) return 'leaf';
     if (level >= 5) return 'seedling';
     return 'sprout';
   };
 
-  // Formatador de data
   const formatDate = (date) => {
     try {
       if (!date) return "-";
       
-      // Se for string, converter para Date
       const dateObj = typeof date === 'string' ? new Date(date) : date;
       
-      // Verificar se a data é válida
       if (isNaN(dateObj.getTime())) return "-";
       
-      // Formatar data
       return dateObj.toLocaleDateString('pt-BR', { 
         day: '2-digit', 
         month: '2-digit',
@@ -324,26 +301,23 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
-  // Verificar se o usuário já tem uma conquista
   const hasAchievement = (achievementId) => {
     return badges.some(badge => badge.id === achievementId);
   };
 
   const pickImage = async () => {
     try {
-      // Solicitar permissões se necessário
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Permissão necessária', 'É necessário permitir o acesso à galeria para selecionar uma foto.');
         return;
       }
       
-      // Configurações para obter uma imagem de tamanho adequado para Firestore
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.1, // Qualidade muito mais baixa (10%)
+        quality: 0.1,
         base64: true,
         exif: false
       });
@@ -351,17 +325,14 @@ export default function ProfileScreen({ navigation }) {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         const selectedImage = result.assets[0];
         
-        // Verificar se a base64 está disponível
         if (!selectedImage.base64) {
           Alert.alert('Erro', 'Não foi possível processar esta imagem. Por favor, tente com outra imagem.');
           return;
         }
         
-        // Verificar tamanho da imagem em base64
         let base64Data = selectedImage.base64;
-        let base64Size = base64Data.length * 0.75 / 1024; // Tamanho aproximado em KB
+        let base64Size = base64Data.length * 0.75 / 1024;
         
-        // Se o tamanho ainda for muito grande, ajustar ainda mais
         if (base64Size > 500) {
           Alert.alert(
             'Imagem grande',
@@ -377,7 +348,6 @@ export default function ProfileScreen({ navigation }) {
                   try {
                     setUploading(true);
                     
-                    // Reduzir a qualidade comprimindo mais agressivamente
                     base64Data = createThumbnail(base64Data);
                     
                     await saveProfileImageToFirestore(base64Data);
@@ -411,24 +381,16 @@ export default function ProfileScreen({ navigation }) {
     }
   };
 
-  // Função para criar uma versão menor da imagem
   const createThumbnail = (base64Data) => {
-    // Método simplificado para reduzir o tamanho da string base64
-    // Neste caso, estamos simplesmente truncando a string, o que reduz a qualidade
-    // e resolução da imagem, mas garante que caiba no Firestore
-    const maxLength = 800 * 1024 * 4/3; // ~800KB após conversão base64
+    const maxLength = 800 * 1024 * 4/3;
     
     if (base64Data.length > maxLength) {
-      // Se for muito grande, reduzir para aproximadamente 600KB
-      // Isso é uma abordagem simples, mas funcional para casos onde a aparência
-      // não é o mais importante
       return base64Data.substring(0, 600 * 1024 * 4/3);
     }
     
     return base64Data;
   };
 
-  // Método para salvar a imagem diretamente no Firestore
   const saveProfileImageToFirestore = async (base64Data) => {
     try {
       const user = auth().currentUser;
@@ -436,30 +398,23 @@ export default function ProfileScreen({ navigation }) {
         throw new Error('Usuário não autenticado');
       }
 
-      // Verificação final de tamanho para garantir que não exceda o limite do Firestore
-      const dataSize = base64Data.length * 0.75 / 1024; // KB
+      const dataSize = base64Data.length * 0.75 / 1024;
       if (dataSize > 800) {
-        // Tentar uma redução mais agressiva
-        const reducedData = base64Data.substring(0, 500 * 1024 * 4/3); // Aproximadamente 500KB
+        const reducedData = base64Data.substring(0, 500 * 1024 * 4/3);
         base64Data = reducedData;
       }
 
-      // Criar URI de dados para usar como photoURL
       const fullPhotoURL = `data:image/jpeg;base64,${base64Data}`;
       
-      // Criar uma thumbnail extremamente pequena para o Auth (firebase tem limite de tamanho)
-      // Pegamos apenas uma pequena parte da base64 para criar uma miniatura
-      const thumbnailSize = Math.min(5000, base64Data.length); // Pegamos no máximo 5KB
+      const thumbnailSize = Math.min(5000, base64Data.length);
       const thumbnailData = base64Data.substring(0, thumbnailSize);
       const thumbnailURL = `data:image/jpeg;base64,${thumbnailData}`;
       
       try {
-        // Atualizar o perfil no Auth com a miniatura
         await user.updateProfile({
           photoURL: thumbnailURL,
         });
       } catch (authError) {
-        // Se falhar, usamos uma URL ainda menor ou uma URL fictícia
         if (authError.code === 'auth/invalid-profile-attribute') {
           await user.updateProfile({
             photoURL: `https://ui-avatars.com/api/?name=${encodeURIComponent(userData?.name || 'User')}&background=FFC107&color=fff`,
@@ -469,26 +424,20 @@ export default function ProfileScreen({ navigation }) {
         }
       }
 
-      // Atualizar documento no Firestore usando técnica de divisão para casos extremos
       try {
-        // Atualizar o Firestore com a imagem completa e URL de referência
         await db.collection('users').doc(user.uid).update({
           photoURL: fullPhotoURL,
-          photoURLAuth: user.photoURL, // Armazenar também a URL do Auth
+          photoURLAuth: user.photoURL,
           lastPhotoUpdate: firebase.firestore.FieldValue.serverTimestamp()
         });
       } catch (firestoreError) {
-        // Se falhar por tamanho do documento, usar abordagem alternativa
         if (firestoreError.message && firestoreError.message.includes('exceeds maximum size')) {
-          // Dividir a imagem em múltiplos fragmentos se necessário
-          const chunkSize = 100 * 1024; // 100KB por fragmento
           await db.collection('users').doc(user.uid).update({
             photoURL: thumbnailURL,
             photoQuality: 'low',
             lastPhotoUpdate: firebase.firestore.FieldValue.serverTimestamp()
           });
           
-          // Atualizar interface com a versão menor
           setUserData(prev => ({
             ...prev,
             photoURL: thumbnailURL,
@@ -504,7 +453,6 @@ export default function ProfileScreen({ navigation }) {
         }
       }
 
-      // Atualizar estado local
       setUserData(prev => ({
         ...prev,
         photoURL: fullPhotoURL,
@@ -537,22 +485,18 @@ export default function ProfileScreen({ navigation }) {
         throw new Error('User not authenticated');
       }
 
-      // Verificar senha atual se fornecida
       if (editCurrentPassword) {
         try {
-          // Reautenticar para verificar a senha
           const credential = firebase.auth.EmailAuthProvider.credential(
             user.email,
             editCurrentPassword
           );
           await user.reauthenticateWithCredential(credential);
           
-          // Se forneceu nova senha, atualiza
           if (editNewPassword) {
             await user.updatePassword(editNewPassword);
           }
           
-          // Atualizar email se foi alterado
           if (editEmail !== user.email) {
             await user.updateEmail(editEmail);
           }
@@ -568,15 +512,12 @@ export default function ProfileScreen({ navigation }) {
         return;
       }
 
-      // Update name in Firestore
       await db.collection('users').doc(user.uid).update({
         name: editName
       });
 
-      // Update state
-      loadUserData();  // Recarregar todos os dados
+      loadUserData(); 
       
-      // Fechar diálogo
       setShowEditProfileDialog(false);
       setEditCurrentPassword('');
       setEditNewPassword('');
@@ -587,67 +528,6 @@ export default function ProfileScreen({ navigation }) {
       Alert.alert('Erro', 'Não foi possível atualizar o perfil. Tente novamente.');
     } finally {
       setEditLoading(false);
-    }
-  };
-
-  const uploadProfileImage = async (imageUri) => {
-    try {
-      if (!imageUri) {
-        console.log('No image provided for upload');
-        return null;
-      }
-
-      setUploading(true);
-      const auth = getAuth();
-      const currentUser = auth.currentUser;
-      
-      if (!currentUser) {
-        Alert.alert('Erro', 'Você precisa estar logado para alterar sua foto.');
-        setUploading(false);
-        return null;
-      }
-
-      // Convert URI to blob
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-      
-      // Create a reference to the file location in Firebase Storage
-      const fileExtension = imageUri.split('.').pop();
-      const fileName = `profile_${currentUser.uid}_${Date.now()}.${fileExtension}`;
-      const storageRef = ref(storage, `profile_images/${fileName}`);
-      
-      // Upload the blob to storage
-      await uploadBytes(storageRef, blob);
-      console.log('Image uploaded successfully');
-      
-      // Get the download URL
-      const downloadURL = await getDownloadURL(storageRef);
-      
-      // Update user profile in Authentication
-      await updateProfile(currentUser, {
-        photoURL: downloadURL
-      });
-      
-      // Update user document in Firestore
-      const userRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userRef, {
-        photoURL: downloadURL
-      });
-      
-      // Update local state
-      setUserData(prev => ({
-        ...prev,
-        photoURL: downloadURL
-      }));
-      
-      Alert.alert('Sucesso', 'Foto de perfil atualizada com sucesso!');
-      return downloadURL;
-    } catch (error) {
-      console.error('Error uploading profile image:', error);
-      Alert.alert('Erro', 'Não foi possível fazer o upload da imagem. Por favor, tente novamente.');
-      return null;
-    } finally {
-      setUploading(false);
     }
   };
 
@@ -1356,6 +1236,7 @@ const styles = StyleSheet.create({
   },
   achievementsDialog: {
     maxHeight: '80%',
+    backgroundColor: 'white',
   },
   dialogTitle: {
     fontFamily: 'Poppins_700Bold',

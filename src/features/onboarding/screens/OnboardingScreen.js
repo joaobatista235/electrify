@@ -18,7 +18,6 @@ const OnboardingScreen = ({ navigation }) => {
     }
   };
 
-  // Função simplificada para ir para a tela principal
   const goToMain = () => {
     navigation.reset({
       index: 0,
@@ -30,14 +29,12 @@ const OnboardingScreen = ({ navigation }) => {
     return null;
   }
 
-  // Array de imagens para as telas de onboarding
   const images = [
     require('../../../assets/images/onboarding/onboarding.png'),
     require('../../../assets/images/onboarding/onboarding2.png'),
     require('../../../assets/images/onboarding/onboarding3.png'),
   ];
 
-  // Conteúdo de cada tela de onboarding
   const screens = [
     {
       title: 'Entenda seu impacto',

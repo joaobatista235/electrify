@@ -68,7 +68,7 @@ export default function RegisterScreen() {
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
             navigation.reset({
                 index: 0,
-                routes: [{ name: 'Main' }]
+                routes: [{ name: 'Onboarding' }]
             });
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {

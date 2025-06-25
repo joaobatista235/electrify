@@ -13,7 +13,6 @@ import { HelpScreen } from '../help';
 const Tab = createBottomTabNavigator();
 const ProfileStack = createNativeStackNavigator();
 
-// Navegador de pilha para a seção de perfil
 const ProfileStackScreen = () => {
   return (
     <ProfileStack.Navigator screenOptions={{ headerShown: false }}>

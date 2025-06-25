@@ -14,9 +14,6 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
-  
-  // Removemos o estado de hasSeenOnboarding e shouldShowOnboarding
-  // pois sempre mostraremos o onboarding após o login
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(async (user) => {
